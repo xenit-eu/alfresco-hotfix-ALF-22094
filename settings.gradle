@@ -1,2 +1,9 @@
 rootProject.name = 'alfresco-hotfix-ALF-22094'
 
+include ':amp'
+include ':amp:alfresco5'
+include ':amp:alfresco6'
+include ':amp'
+include ':docker'
+include ':docker:alfresco5'
+include ':docker:alfresco6'

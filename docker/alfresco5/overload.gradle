@@ -1,0 +1,6 @@
+ext {
+    alfrescoImageDep = "xenit/alfresco-repository-community:5.2"
+    alfrescoWarDep = "org.alfresco:alfresco-platform:5.2.g@war"
+    alfrescoRepositoryDependency = "org.alfresco:alfresco-repository:5.2.g"
+    ampTask = ":amp:alfresco5:amp"
+}

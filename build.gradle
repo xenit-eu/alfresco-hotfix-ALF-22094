@@ -6,33 +6,10 @@ plugins {
     id "eu.xenit.docker-compose.auto" version "5.0.5" // See https://plugins.gradle.org/plugin/eu.xenit.docker-compose.auto for the latest version
 }
 
-group 'eu.xenit'
-version '1.0.0-SNAPSHOT'
-
-sourceCompatibility=1.8
-targetCompatibility=1.8
-
 repositories {
     mavenCentral()
 }
 
-dockerAlfresco {
-    baseImage = "xenit/alfresco-repository-community:6.1.2-ga"
-    leanImage = true
-    dockerBuild {
-        repository = 'alfresco-with-amp'
-        automaticTags = true
-    }
-}
 
-dockerCompose {
-    useComposeFiles = ['src/docker/docker-compose.yml']
-    stopContainers = true
-    waitForTcpPorts = false
-}
 
-dependencies {
-    alfrescoProvided("org.alfresco:alfresco-repository:8.157")
-    baseAlfrescoWar "org.alfresco:content-services-community:6.1.2-ga@war"
-    alfrescoAmp amp.outputs.files
-}
+

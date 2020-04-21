@@ -1,0 +1,4 @@
+ext {
+    alfRepoDep = "org.alfresco:alfresco-repository:8.157"
+    artifactName = "alfresco6-hotfix-ALF-22094"
+}
