@@ -2,6 +2,44 @@
 
 <!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
 <beans>
-    <bean id="antiIdleCronJob" class="eu.xenit.alfresco.AntiIdleCronJob" init-method="init">
+
+    <bean id="AntiIdleScheduledJobExecuter"
+            class="eu.xenit.alfresco.AntiIdleScheduledJobExecuter">
+        <property name="serviceRegistry">
+            <ref bean="ServiceRegistry" />
+        </property>
     </bean>
+
+    <bean id="JobDetail"
+            class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass">
+            <value>eu.xenit.alfresco.AntiIdleScheduledJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="jobExecuter" value-ref="AntiIdleScheduledJobExecuter" />
+                <entry key="jobLockService" value-ref="jobLockService" />
+            </map>
+        </property>
+    </bean>
+
+    <bean id="AntiIdleTrigger"
+            class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="JobDetail" />
+        <property name="cronExpression" value="${eu.xenit.alfresco.antiidle.cronexpression}" />
+        <property name="startDelay" value="${eu.xenit.alfresco.antiidle.cronstartdelay}" />
+    </bean>
+
+    <bean id="AntiIdleSchedulerAccessor"
+            class="org.alfresco.schedule.AlfrescoSchedulerAccessorBean">
+        <property name="scheduler" ref="schedulerFactory"/>
+        <property name="triggers">
+            <list>
+                <ref bean="AntiIdleTrigger"/>
+            </list>
+        </property>
+        <property name="enabled" value="${eu.xenit.alfresco.antiidle.enabled}" />
+    </bean>
+
+
 </beans>

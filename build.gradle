@@ -32,11 +32,7 @@ dockerCompose {
 }
 
 dependencies {
-    compile group: 'org.springframework', name: 'spring-context', version: '5.2.5.RELEASE'
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-
+    alfrescoProvided("org.alfresco:alfresco-repository:8.157")
     baseAlfrescoWar "org.alfresco:content-services-community:6.1.2-ga@war"
     alfrescoAmp amp.outputs.files
-    baseShareWar(group: 'org.alfresco', name: 'share', version: '5.1.1.4', ext: 'war')
 }
