@@ -6,6 +6,9 @@ plugins {
     id "eu.xenit.docker-compose.auto" version "5.0.5" // See https://plugins.gradle.org/plugin/eu.xenit.docker-compose.auto for the latest version
 }
 
+group 'eu.xenit'
+version '1.0.0-SNAPSHOT'
+
 configure(subprojects.findAll {it.name.contains("hotfix")}) {
     apply plugin: 'java'
     apply plugin: 'eu.xenit.alfresco'
@@ -14,8 +17,6 @@ configure(subprojects.findAll {it.name.contains("hotfix")}) {
     apply plugin: "eu.xenit.docker-compose.auto"
     apply from: "${project.projectDir}/overload.gradle"
 
-    group 'eu.xenit'
-    version '1.0.0-SNAPSHOT'
     description 'amp that creates dummy transactions'
 
     sourceSets {
