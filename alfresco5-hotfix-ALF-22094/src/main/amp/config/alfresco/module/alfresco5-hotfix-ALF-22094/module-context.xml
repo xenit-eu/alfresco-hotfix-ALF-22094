@@ -3,42 +3,39 @@
 <!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
 <beans>
 
-    <bean id="AntiIdleScheduledJobExecuter"
+    <bean id="eu.xenit.alfresco.AntiIdleScheduledJobExecuter"
             class="eu.xenit.alfresco.AntiIdleScheduledJobExecuter">
         <property name="serviceRegistry">
             <ref bean="ServiceRegistry" />
         </property>
     </bean>
 
-    <bean id="JobDetail"
-            class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+    <bean id="eu.xenit.alfresco.AntiIdleJobDetail"
+            class="org.springframework.scheduling.quartz.JobDetailBean">
         <property name="jobClass">
             <value>eu.xenit.alfresco.AntiIdleScheduledJob</value>
         </property>
         <property name="jobDataAsMap">
             <map>
-                <entry key="jobExecuter" value-ref="AntiIdleScheduledJobExecuter" />
+                <entry key="jobExecuter" value-ref="eu.xenit.alfresco.AntiIdleScheduledJobExecuter" />
                 <entry key="jobLockService" value-ref="jobLockService" />
             </map>
         </property>
     </bean>
 
-    <bean id="AntiIdleTrigger"
-            class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-        <property name="jobDetail" ref="JobDetail" />
+    <bean id="eu.xenit.alfresco.AntiIdleTrigger"
+            class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="eu.xenit.alfresco.AntiIdleJobDetail" />
         <property name="cronExpression" value="${eu.xenit.alfresco.antiidle.cronexpression}" />
         <property name="startDelay" value="${eu.xenit.alfresco.antiidle.cronstartdelay}" />
     </bean>
 
-    <bean id="AntiIdleSchedulerAccessor"
-            class="org.alfresco.schedule.AlfrescoSchedulerAccessorBean">
-        <property name="scheduler" ref="schedulerFactory"/>
+    <bean id="eu.xenit.alfresco.AntiIdleSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-                <ref bean="AntiIdleTrigger"/>
+                <ref bean="eu.xenit.alfresco.AntiIdleTrigger"/>
             </list>
         </property>
-        <property name="enabled" value="${eu.xenit.alfresco.antiidle.enabled}" />
     </bean>
 
 
