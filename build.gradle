@@ -6,7 +6,7 @@ plugins {
     id "eu.xenit.docker-compose.auto" version "5.0.5" // See https://plugins.gradle.org/plugin/eu.xenit.docker-compose.auto for the latest version
 }
 
-configure(subprojects) {
+configure(subprojects.findAll {it.name.contains("hotfix")}) {
     apply plugin: 'java'
     apply plugin: 'eu.xenit.alfresco'
     apply plugin: 'eu.xenit.amp'
@@ -21,28 +21,24 @@ configure(subprojects) {
     sourceSets {
         main {
             java {
-                srcDirs = ["../src/main/java"]
+                srcDirs = ["../core/src/main/java"]
             }
             resources {
-                srcDirs = ["../src/main/resources"]
+                srcDirs = ["../core/src/main/resources"]
             }
         }
         test {
             java {
-                srcDirs = ["../src/test", "source-test"]
+                srcDirs = ["../core/src/test/java"]
             }
             resources {
-                srcDirs = ["../src/test/resources", "resources-test"]
+                srcDirs = ["../core/src/test/resources"]
             }
         }
     }
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
-
-    dependencies {
-        alfrescoProvided("${alfRepoDep}")
-    }
 
     dockerAlfresco {
         baseImage = "${alfrescoImageDep}"
@@ -60,6 +56,7 @@ configure(subprojects) {
     }
 
     dependencies {
+        alfrescoProvided("${alfRepoDep}")
         baseAlfrescoWar "${alfrescoWarDep}"
         alfrescoAmp tasks.getByPath("${ampTask}").outputs.files
     }
