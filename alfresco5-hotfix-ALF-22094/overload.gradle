@@ -1,6 +1,7 @@
 ext {
+    alfRepoDep = "org.alfresco:alfresco-repository:5.2.g"
     alfrescoImageDep = "xenit/alfresco-repository-community:5.2"
     alfrescoWarDep = "org.alfresco:alfresco-platform:5.2.g@war"
     alfrescoRepositoryDependency = "org.alfresco:alfresco-repository:5.2.g"
-    ampTask = ":amp:alfresco5:amp"
+    ampTask = ":alfresco5-hotfix-ALF-22094:amp"
 }

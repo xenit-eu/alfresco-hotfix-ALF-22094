@@ -6,6 +6,65 @@ plugins {
     id "eu.xenit.docker-compose.auto" version "5.0.5" // See https://plugins.gradle.org/plugin/eu.xenit.docker-compose.auto for the latest version
 }
 
+configure(subprojects) {
+    apply plugin: 'java'
+    apply plugin: 'eu.xenit.alfresco'
+    apply plugin: 'eu.xenit.amp'
+    apply plugin: "eu.xenit.docker-alfresco"
+    apply plugin: "eu.xenit.docker-compose.auto"
+    apply from: "${project.projectDir}/overload.gradle"
+
+    group 'eu.xenit'
+    version '1.0.0-SNAPSHOT'
+    description 'amp that creates dummy transactions'
+
+    sourceSets {
+        main {
+            java {
+                srcDirs = ["../src/main/java"]
+            }
+            resources {
+                srcDirs = ["../src/main/resources"]
+            }
+        }
+        test {
+            java {
+                srcDirs = ["../src/test", "source-test"]
+            }
+            resources {
+                srcDirs = ["../src/test/resources", "resources-test"]
+            }
+        }
+    }
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    dependencies {
+        alfrescoProvided("${alfRepoDep}")
+    }
+
+    dockerAlfresco {
+        baseImage = "${alfrescoImageDep}"
+        leanImage = true
+        dockerBuild {
+            repository = 'alfresco-with-amp'
+            automaticTags = true
+        }
+    }
+
+    dockerCompose {
+        useComposeFiles = ['../docker/docker-compose.yml']
+        stopContainers = true
+        waitForTcpPorts = false
+    }
+
+    dependencies {
+        baseAlfrescoWar "${alfrescoWarDep}"
+        alfrescoAmp tasks.getByPath("${ampTask}").outputs.files
+    }
+}
+
 repositories {
     mavenCentral()
 }

@@ -1,4 +1,0 @@
-ext {
-    alfRepoDep = "org.alfresco:alfresco-repository:5.2.g"
-    artifactName = "alfresco5-hotfix-ALF-22094"
-}
