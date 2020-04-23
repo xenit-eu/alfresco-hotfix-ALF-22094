@@ -26,8 +26,9 @@ import org.springframework.util.StringUtils;
 public class AntiIdleScheduledJobExecuter {
     private static final Logger LOG = LoggerFactory.getLogger(AntiIdleScheduledJobExecuter.class);
     private static final String defaultLocation = "/Company Home/Data Dictionary/Anti Idle/Dummy Document";
-    private static String[] folder = new String[]{"Data Dictionary", "Anti Idle"};
-    private static String fileName = "Dummy Document";
+    private String[] folder = new String[]{"Data Dictionary", "Anti Idle"};
+    private String fileName = "Dummy Document";
+    private boolean enabled = true;
     private NodeService nodeService;
     private NodeLocatorService nodeLocatorService;
     private RetryingTransactionHelper retryingTransactionHelper;
@@ -60,17 +61,25 @@ public class AntiIdleScheduledJobExecuter {
             LOG.debug("Only dummy files in Company Home tree supported for now, using default " + defaultLocation);
             return;
         }
+        LOG.debug("Setting location to " + location);
         fileName = segments.remove(segments.size() - 1);
         segments.remove(0);
         folder = segments.toArray(new String[0]);
     }
 
-
+    public void setEnabled(boolean enabled) {
+        LOG.debug("setting enabled to " + enabled);
+        this.enabled = enabled;
+    }
 
     /**
      * Executer implementation
      */
     public void execute() {
+        if (!enabled) {
+            LOG.debug("Not running " + this.getClass().getCanonicalName() + ", not enabled");
+            return;
+        }
         LOG.debug("Running " + this.getClass().getCanonicalName());
         retryingTransactionHelper.doInTransaction(() -> {
             if (nodeRef == null) {

@@ -9,6 +9,7 @@
             <ref bean="ServiceRegistry" />
         </property>
         <property name="fileLocation" value="${eu.xenit.alfresco.antiidle.fileLocation}" />
+        <property name="enabled" value="${eu.xenit.alfresco.antiidle.enabled}" />
     </bean>
 
     <bean id="eu.xenit.alfresco.AntiIdleJobDetail"
