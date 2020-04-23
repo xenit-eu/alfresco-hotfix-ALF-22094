@@ -83,13 +83,29 @@ public class AntiIdleScheduledJobExecuter {
         LOG.debug("Running " + this.getClass().getCanonicalName());
         retryingTransactionHelper.doInTransaction(() -> {
             if (nodeRef == null) {
-                nodeRef = createDummyDoc();
-                LOG.debug("Created " + nodeRef);
+                NodeRef existing = fileAlreadyExists();
+                if (existing == null) {
+                    nodeRef = createDummyDoc();
+                    LOG.debug("Created " + nodeRef);
+                } else {
+                    nodeRef = existing;
+                    LOG.debug("Dummy already exists: " + nodeRef);
+                }
             }
             LOG.debug("Updating " + nodeRef);
             updateDummyDoc(nodeRef);
             return null;
         });
+    }
+
+    private NodeRef fileAlreadyExists() {
+        NodeRef parent = getFolderByDisplayPath(folder, true);
+        List<ChildAssociationRef> collect = nodeService
+                .getChildAssocs(parent)
+                .stream()
+                .filter(childAssociationRef -> childAssociationRef.getQName().getLocalName().equals(fileName))
+                .collect(Collectors.toList());
+        return collect.isEmpty() ? null : collect.get(0).getChildRef();
     }
 
     private NodeRef createDummyDoc() {
