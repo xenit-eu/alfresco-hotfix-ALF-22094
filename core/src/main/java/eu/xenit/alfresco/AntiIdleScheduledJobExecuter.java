@@ -83,14 +83,7 @@ public class AntiIdleScheduledJobExecuter {
         LOG.debug("Running " + this.getClass().getCanonicalName());
         retryingTransactionHelper.doInTransaction(() -> {
             if (nodeRef == null) {
-                NodeRef existing = fileAlreadyExists();
-                if (existing == null) {
-                    nodeRef = createDummyDoc();
-                    LOG.debug("Created " + nodeRef);
-                } else {
-                    nodeRef = existing;
-                    LOG.debug("Dummy already exists: " + nodeRef);
-                }
+                nodeRef = getOrCreateDummyFile();
             }
             LOG.debug("Updating " + nodeRef);
             updateDummyDoc(nodeRef);
@@ -98,14 +91,20 @@ public class AntiIdleScheduledJobExecuter {
         });
     }
 
+    private NodeRef getOrCreateDummyFile() {
+        NodeRef existing = fileAlreadyExists();
+        if (existing != null) {
+            LOG.debug("Dummy already exists: " + existing);
+            return existing;
+        }
+        nodeRef = createDummyDoc();
+        LOG.debug("Created dummy" + nodeRef);
+        return nodeRef;
+    }
+
     private NodeRef fileAlreadyExists() {
         NodeRef parent = getFolderByDisplayPath(folder, true);
-        List<ChildAssociationRef> collect = nodeService
-                .getChildAssocs(parent)
-                .stream()
-                .filter(childAssociationRef -> childAssociationRef.getQName().getLocalName().equals(fileName))
-                .collect(Collectors.toList());
-        return collect.isEmpty() ? null : collect.get(0).getChildRef();
+        return nodeService.getChildByName(parent, ContentModel.ASSOC_CONTAINS, fileName);
     }
 
     private NodeRef createDummyDoc() {
@@ -116,7 +115,10 @@ public class AntiIdleScheduledJobExecuter {
                 createQName(
                         NamespaceService.CONTENT_MODEL_1_0_URI,
                         fileName),
-                ContentModel.PROP_CONTENT);
+                ContentModel.PROP_CONTENT,
+                new HashMap<QName, Serializable>() {{
+                    put(ContentModel.PROP_NAME, fileName);
+                }});
         return node.getChildRef();
     }
 
