@@ -26,8 +26,8 @@ import org.springframework.util.StringUtils;
 public class AntiIdleScheduledJobExecuter {
     private static final Logger LOG = LoggerFactory.getLogger(AntiIdleScheduledJobExecuter.class);
     private static final String defaultLocation = "/Company Home/Data Dictionary/Anti Idle/Dummy Document";
-    private String[] folder = new String[]{"Data Dictionary", "Anti Idle"};
-    private String fileName = "Dummy Document";
+    private String[] folder;
+    private String fileName;
     private boolean enabled = true;
     private NodeService nodeService;
     private NodeLocatorService nodeLocatorService;
@@ -49,22 +49,34 @@ public class AntiIdleScheduledJobExecuter {
     public void setFileLocation(String location) {
         if (StringUtils.isEmpty(location)) {
             LOG.debug("Custom location not set, using default " + defaultLocation);
+            setFolderAndFileName(toSegments(defaultLocation));
             return;
         }
-        List<String> segments = Arrays.stream(location.split("/"))
-                .filter(s -> !StringUtils.isEmpty(s))
-                .collect(Collectors.toList());
+        List<String> segments = toSegments(location);
         if (segments.size() < 2) {
             LOG.debug("Custom location should have at least 2 segments, using default " + defaultLocation);
+            setFolderAndFileName(toSegments(defaultLocation));
             return;
         }
-        if (!"Company Home".equals(segments.remove(0))) {
+        if (!"Company Home".equals(segments.get(0))) {
             LOG.debug("Only dummy files in Company Home tree supported for now, using default " + defaultLocation);
+            setFolderAndFileName(toSegments(defaultLocation));
             return;
         }
         LOG.debug("Setting location to " + location);
+        setFolderAndFileName(segments);
+    }
+
+    private void setFolderAndFileName(List<String> segments) {
+        segments.remove(0);
         fileName = segments.remove(segments.size() - 1);
         folder = segments.toArray(new String[0]);
+    }
+
+    private List<String> toSegments(String location) {
+        return Arrays.stream(location.split("/"))
+                .filter(s -> !StringUtils.isEmpty(s))
+                .collect(Collectors.toList());
     }
 
     public void setEnabled(boolean enabled) {
