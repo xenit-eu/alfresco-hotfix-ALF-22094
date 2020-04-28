@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.nodelocator.CompanyHomeNodeLocator;
 import org.alfresco.repo.nodelocator.NodeLocatorService;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ import org.springframework.util.StringUtils;
 
 public class AntiIdleScheduledJobExecuter {
     private static final Logger LOG = LoggerFactory.getLogger(AntiIdleScheduledJobExecuter.class);
-    private static final String defaultLocation = "/Company Home/Data Dictionary/Anti Idle/Dummy Document";
+    private static final String defaultLocation = "/Anti Idle/Dummy Document";
     private String[] folder;
     private String fileName;
     private boolean enabled = true;
@@ -53,13 +53,8 @@ public class AntiIdleScheduledJobExecuter {
             return;
         }
         List<String> segments = toSegments(location);
-        if (segments.size() < 2) {
-            LOG.debug("Custom location should have at least 2 segments, using default " + defaultLocation);
-            setFolderAndFileName(toSegments(defaultLocation));
-            return;
-        }
-        if (!"Company Home".equals(segments.get(0))) {
-            LOG.debug("Only dummy files in Company Home tree supported for now, using default " + defaultLocation);
+        if (segments.isEmpty()) {
+            LOG.debug("Custom location should have at least one segment, using default " + defaultLocation);
             setFolderAndFileName(toSegments(defaultLocation));
             return;
         }
@@ -68,7 +63,6 @@ public class AntiIdleScheduledJobExecuter {
     }
 
     private void setFolderAndFileName(List<String> segments) {
-        segments.remove(0);
         fileName = segments.remove(segments.size() - 1);
         folder = segments.toArray(new String[0]);
     }
@@ -104,23 +98,18 @@ public class AntiIdleScheduledJobExecuter {
     }
 
     private NodeRef getOrCreateDummyFile() {
-        NodeRef existing = fileAlreadyExists();
+        NodeRef parent = getFolderByDisplayPath(folder, true);
+        NodeRef existing = nodeService.getChildByName(parent, ContentModel.ASSOC_CONTAINS, fileName);;
         if (existing != null) {
             LOG.debug("Dummy already exists: " + existing);
             return existing;
         }
-        nodeRef = createDummyDoc();
+        nodeRef = createDummyDoc(parent);
         LOG.debug("Created dummy" + nodeRef);
         return nodeRef;
     }
 
-    private NodeRef fileAlreadyExists() {
-        NodeRef parent = getFolderByDisplayPath(folder, true);
-        return nodeService.getChildByName(parent, ContentModel.ASSOC_CONTAINS, fileName);
-    }
-
-    private NodeRef createDummyDoc() {
-        NodeRef parent = getFolderByDisplayPath(folder, true);
+    private NodeRef createDummyDoc(NodeRef parent) {
         ChildAssociationRef node = nodeService.createNode(
                 parent,
                 ContentModel.ASSOC_CONTAINS,
@@ -142,21 +131,16 @@ public class AntiIdleScheduledJobExecuter {
     }
 
     public NodeRef getFolderByDisplayPath(final String[] path, final boolean create) {
-        NodeRef cursor = nodeLocatorService.getNode(CompanyHomeNodeLocator.NAME, null, null);
-
+        NodeRef cursor = nodeService.getRootNode(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
+        boolean storeRootPassed = false;
         for (String folder : path) {
-            NodeRef child = nodeService.getChildByName(cursor, ContentModel.ASSOC_CONTAINS, folder);
+            NodeRef child = find(cursor, folder);
             if (child != null) {
                 cursor = child;
+                storeRootPassed = true;
             } else if (create) {
-                Map<QName, Serializable> folderProp = new HashMap<>();
-                folderProp.put(ContentModel.PROP_NAME, folder);
-
-                cursor = nodeService.createNode(cursor,
-                        ContentModel.ASSOC_CONTAINS,
-                        createQName(NamespaceService.CONTENT_MODEL_1_0_URI, folder),
-                        ContentModel.TYPE_FOLDER,
-                        folderProp).getChildRef();
+                cursor = create(cursor, folder, storeRootPassed);
+                storeRootPassed = true;
             } else {
                 return null;
             }
@@ -165,5 +149,21 @@ public class AntiIdleScheduledJobExecuter {
         return cursor;
     }
 
+    private NodeRef find(NodeRef parent, String folder) {
+        return nodeService.getChildAssocs(parent).stream()
+                .filter(ref -> ref.getQName().getLocalName().equals(folder))
+                .map(ChildAssociationRef::getChildRef)
+                .findFirst().orElse(null);
+    }
+
+    private NodeRef create(NodeRef parent, String folder, boolean storeRootPassed) {
+        Map<QName, Serializable> folderProp = new HashMap<>();
+        folderProp.put(ContentModel.PROP_NAME, folder);
+        return nodeService.createNode(parent,
+                storeRootPassed ? ContentModel.ASSOC_CONTAINS : ContentModel.ASSOC_CHILDREN,
+                createQName(NamespaceService.CONTENT_MODEL_1_0_URI, folder),
+                ContentModel.TYPE_FOLDER,
+                folderProp).getChildRef();
+    }
 
 }
