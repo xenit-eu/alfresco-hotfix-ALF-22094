@@ -4,10 +4,28 @@ plugins {
     id 'eu.xenit.amp' version "1.0.1"
     id "eu.xenit.docker-alfresco" version "5.0.5" // See https://plugins.gradle.org/plugin/eu.xenit.docker-alfresco for the latest version
     id "eu.xenit.docker-compose.auto" version "5.0.5" // See https://plugins.gradle.org/plugin/eu.xenit.docker-compose.auto for the latest version
+    id 'signing'
+    id 'maven-publish'
+    id "io.codearte.nexus-staging" version "0.20.0"
 }
 
-group 'eu.xenit'
-version '1.0.0-SNAPSHOT'
+apply from: 'nexus.gradle'
+apply from: 'publishing.gradle'
+apply from: 'signing.gradle'
+
+group 'eu.xenit.alfresco'
+description = "Hotfix for ALF-22094, reduce access logs from Solr for an idle Alfresco"
+
+def baseVersion = "1.0.0"
+
+def branchName = System.env.BRANCH_NAME
+def isRelease = branchName != null && branchName.startsWith("release")
+if (isRelease)
+    version = "$baseVersion"
+else
+    version = "$baseVersion-SNAPSHOT"
+
+tasks.jar.enabled = false
 
 configure(subprojects.findAll {it.name.contains("hotfix")}) {
     apply plugin: 'java'
