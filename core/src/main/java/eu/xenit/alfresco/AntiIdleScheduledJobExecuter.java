@@ -63,8 +63,8 @@ public class AntiIdleScheduledJobExecuter {
     }
 
     private void setFolderAndFileName(List<String> segments) {
-        fileName = segments.remove(segments.size() - 1);
-        folder = segments.toArray(new String[0]);
+        fileName = segments.get(segments.size() - 1);
+        folder = segments.subList(0, segments.size() - 1).toArray(new String[0]);
     }
 
     private List<String> toSegments(String location) {
