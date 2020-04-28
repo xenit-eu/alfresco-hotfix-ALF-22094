@@ -8,6 +8,8 @@
         <property name="serviceRegistry">
             <ref bean="ServiceRegistry" />
         </property>
+        <property name="fileLocation" value="${eu.xenit.alfresco.anti-idle.fileLocation}" />
+        <property name="enabled" value="${eu.xenit.alfresco.anti-idle.enabled}" />
     </bean>
 
     <bean id="eu.xenit.alfresco.AntiIdleJobDetail"
@@ -26,8 +28,8 @@
     <bean id="eu.xenit.alfresco.AntiIdleTrigger"
             class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="eu.xenit.alfresco.AntiIdleJobDetail" />
-        <property name="cronExpression" value="${eu.xenit.alfresco.antiidle.cronexpression}" />
-        <property name="startDelay" value="${eu.xenit.alfresco.antiidle.cronstartdelay}" />
+        <property name="cronExpression" value="${eu.xenit.alfresco.anti-idle.cronexpression}" />
+        <property name="startDelay" value="${eu.xenit.alfresco.anti-idle.cronstartdelay}" />
     </bean>
 
     <bean id="eu.xenit.alfresco.AntiIdleSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

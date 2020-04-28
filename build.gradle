@@ -18,6 +18,7 @@ configure(subprojects.findAll {it.name.contains("hotfix")}) {
     apply from: "${project.projectDir}/overload.gradle"
 
     description 'amp that creates dummy transactions'
+    version = rootProject.version
 
     sourceSets {
         main {
