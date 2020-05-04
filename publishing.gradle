@@ -36,8 +36,8 @@ publishing {
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
 
             credentials {
-                username = project.hasProperty('de_publish_username') ? project.de_publish_username : ''
-                password = project.hasProperty('de_publish_password') ? project.de_publish_password : ''
+                username = project.hasProperty('publish_username') ? project.de_publish_username : ''
+                password = project.hasProperty('publish_password') ? project.de_publish_password : ''
             }
         }
     }
