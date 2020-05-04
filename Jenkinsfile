@@ -16,12 +16,12 @@ pipeline {
         }
 
         stage('Publish Amp') {
-//             when {
-//                 anyOf {
-//                     branch "master*"
-//                     branch "release*"
-//                 }
-//             }
+            when {
+                anyOf {
+                    branch "master*"
+                    branch "release*"
+                }
+            }
             environment {
                 SONATYPE_CREDENTIALS = credentials('sonatype')
                 GPGPASSPHRASE = credentials('gpgpassphrase')
