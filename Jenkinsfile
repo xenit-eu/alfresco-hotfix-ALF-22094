@@ -11,7 +11,7 @@ pipeline {
 
         stage("Assemble") {
             steps {
-                sh "./gradlew amp"
+                sh "./gradlew assemble --refresh-dependencies -i"
             }
         }
 
@@ -23,12 +23,12 @@ pipeline {
                 }
             }
             environment {
-                SONNATYPE_CREDENTIALS = credentials('sonatype')
+                SONATYPE_CREDENTIALS = credentials('sonatype')
                 GPGPASSPHRASE = credentials('gpgpassphrase')
             }
             steps {
                 script {
-                    sh "./gradlew publish -Pde_publish_username=${SONNATYPE_CREDENTIALS_USR} -Pde_publish_password=${SONNATYPE_CREDENTIALS_PSW} -PkeyId=DF8285F0 -Ppassword=${GPGPASSPHRASE} -PsecretKeyRingFile=/var/jenkins_home/secring.gpg"
+                    sh "./gradlew publish -Pde_publish_username=${SONATYPE_CREDENTIALS_USR} -Pde_publish_password=${SONATYPE_CREDENTIALS_PSW} -PkeyId=DF8285F0 -Ppassword=${GPGPASSPHRASE} -PsecretKeyRingFile=/var/jenkins_home/secring.gpg"
                 }
             }
         }
@@ -36,8 +36,8 @@ pipeline {
 
 
     post {
-        success {
-            archiveArtifacts artifacts: '**/build/dist/*.amp'
+        always {
+            sh "./gradlew clean"
         }
     }
 }
