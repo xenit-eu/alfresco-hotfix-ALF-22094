@@ -4,6 +4,7 @@ plugins {
     id 'eu.xenit.amp' version "1.0.1"
     id "eu.xenit.docker-alfresco" version "5.0.5" // See https://plugins.gradle.org/plugin/eu.xenit.docker-alfresco for the latest version
     id "eu.xenit.docker-compose.auto" version "5.0.5" // See https://plugins.gradle.org/plugin/eu.xenit.docker-compose.auto for the latest version
+    id 'signing'
     id 'maven-publish'
 }
 
@@ -27,9 +28,11 @@ configure(subprojects.findAll {it.name.contains("hotfix")}) {
     apply plugin: 'eu.xenit.amp'
     apply plugin: "eu.xenit.docker-alfresco"
     apply plugin: "eu.xenit.docker-compose.auto"
+    apply plugin: "signing"
     apply plugin: "maven-publish"
 
     apply from: "${rootProject.projectDir}/publishing.gradle"
+    apply from: "${rootProject.projectDir}/signing.gradle"
     apply from: "${project.projectDir}/overload.gradle"
 
     description 'amp that creates dummy transactions'
