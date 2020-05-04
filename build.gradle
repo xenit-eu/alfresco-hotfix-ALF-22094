@@ -4,14 +4,8 @@ plugins {
     id 'eu.xenit.amp' version "1.0.1"
     id "eu.xenit.docker-alfresco" version "5.0.5" // See https://plugins.gradle.org/plugin/eu.xenit.docker-alfresco for the latest version
     id "eu.xenit.docker-compose.auto" version "5.0.5" // See https://plugins.gradle.org/plugin/eu.xenit.docker-compose.auto for the latest version
-    id 'signing'
     id 'maven-publish'
-    id "io.codearte.nexus-staging" version "0.20.0"
 }
-
-apply from: 'nexus.gradle'
-apply from: 'publishing.gradle'
-apply from: 'signing.gradle'
 
 group 'eu.xenit.alfresco'
 description = "Hotfix for ALF-22094, reduce access logs from Solr for an idle Alfresco"
@@ -33,10 +27,14 @@ configure(subprojects.findAll {it.name.contains("hotfix")}) {
     apply plugin: 'eu.xenit.amp'
     apply plugin: "eu.xenit.docker-alfresco"
     apply plugin: "eu.xenit.docker-compose.auto"
+    apply plugin: "maven-publish"
+
+    apply from: "${rootProject.projectDir}/publishing.gradle"
     apply from: "${project.projectDir}/overload.gradle"
 
     description 'amp that creates dummy transactions'
     version = rootProject.version
+    group = rootProject.group
 
     sourceSets {
         main {
