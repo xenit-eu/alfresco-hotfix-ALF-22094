@@ -3,8 +3,8 @@
 <!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
 <beans>
 
-    <bean id="eu.xenit.alfresco.AntiIdleScheduledJobExecuter"
-            class="eu.xenit.alfresco.AntiIdleScheduledJobExecuter">
+    <bean id="eu.xenit.alfresco.AntiIdleScheduledJobExecutor"
+            class="eu.xenit.alfresco.AntiIdleScheduledJobExecutor">
         <property name="serviceRegistry">
             <ref bean="ServiceRegistry" />
         </property>
@@ -18,7 +18,7 @@
         </property>
         <property name="jobDataAsMap">
             <map>
-                <entry key="jobExecuter" value-ref="eu.xenit.alfresco.AntiIdleScheduledJobExecuter" />
+                <entry key="jobExecuter" value-ref="eu.xenit.alfresco.AntiIdleScheduledJobExecutor" />
                 <entry key="jobLockService" value-ref="jobLockService" />
             </map>
         </property>

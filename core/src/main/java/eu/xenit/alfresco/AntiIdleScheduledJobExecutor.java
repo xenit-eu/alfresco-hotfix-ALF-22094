@@ -23,8 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-public class AntiIdleScheduledJobExecuter {
-    private static final Logger LOG = LoggerFactory.getLogger(AntiIdleScheduledJobExecuter.class);
+public class AntiIdleScheduledJobExecutor {
+    private static final Logger LOG = LoggerFactory.getLogger(AntiIdleScheduledJobExecutor.class);
     private static final String defaultLocation = "/Anti Idle/Dummy Document";
     private String[] folder;
     private String fileName;
@@ -79,7 +79,7 @@ public class AntiIdleScheduledJobExecuter {
     }
 
     /**
-     * Executer implementation
+     * Executor implementation
      */
     public void execute() {
         if (!enabled) {
