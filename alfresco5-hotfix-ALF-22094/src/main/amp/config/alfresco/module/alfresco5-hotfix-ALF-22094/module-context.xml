@@ -19,7 +19,7 @@
         </property>
         <property name="jobDataAsMap">
             <map>
-                <entry key="jobExecuter" value-ref="eu.xenit.alfresco.AntiIdleScheduledJobExecutor" />
+                <entry key="jobExecutor" value-ref="eu.xenit.alfresco.AntiIdleScheduledJobExecutor" />
                 <entry key="jobLockService" value-ref="jobLockService" />
             </map>
         </property>

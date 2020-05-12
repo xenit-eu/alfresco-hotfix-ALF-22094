@@ -37,18 +37,7 @@ configure(subprojects.findAll {it.name.contains("hotfix")}) {
     sourceSets {
         main {
             java {
-                srcDirs = ["../core/src/main/java"]
-            }
-            resources {
-                srcDirs = ["../core/src/main/resources"]
-            }
-        }
-        test {
-            java {
-                srcDirs = ["../core/src/test/java"]
-            }
-            resources {
-                srcDirs = ["../core/src/test/resources"]
+                srcDirs += ["../core/src/main/java"]
             }
         }
     }
