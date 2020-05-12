@@ -13,17 +13,17 @@ public class AntiIdleScheduledJob extends AbstractScheduledLockedJob implements 
     public void executeJob(JobExecutionContext context) throws JobExecutionException {
         JobDataMap jobData = context.getJobDetail().getJobDataMap();
 
-        // Extract the Job executer to use
-        Object executerObj = jobData.get("jobExecuter");
-        if (executerObj == null || !(executerObj instanceof AntiIdleScheduledJobExecuter)) {
+        // Extract the Job executor to use
+        Object executorObj = jobData.get("jobExecutor");
+        if (!(executorObj instanceof AntiIdleScheduledJobExecutor)) {
             throw new AlfrescoRuntimeException(
-                    "ScheduledJob data must contain valid 'Executer' reference");
+                    "ScheduledJob data must contain valid 'Executor' reference");
         }
 
-        final AntiIdleScheduledJobExecuter jobExecuter = (AntiIdleScheduledJobExecuter) executerObj;
+        final AntiIdleScheduledJobExecutor jobExecutor = (AntiIdleScheduledJobExecutor) executorObj;
 
         AuthenticationUtil.runAs(() -> {
-            jobExecuter.execute();
+            jobExecutor.execute();
             return null;
         }, AuthenticationUtil.getSystemUserName());
     }
