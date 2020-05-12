@@ -1,11 +1,8 @@
 plugins {
-    id 'java'
-    id 'eu.xenit.alfresco' version "1.0.1" // Have a look at https://plugins.gradle.org/plugin/eu.xenit.alfresco for the latest version
-    id 'eu.xenit.amp' version "1.0.1"
-    id "eu.xenit.docker-alfresco" version "5.0.5" // See https://plugins.gradle.org/plugin/eu.xenit.docker-alfresco for the latest version
-    id "eu.xenit.docker-compose.auto" version "5.0.5" // See https://plugins.gradle.org/plugin/eu.xenit.docker-compose.auto for the latest version
-    id 'signing'
-    id 'maven-publish'
+    id 'eu.xenit.alfresco' version "1.0.1" apply(false) // Have a look at https://plugins.gradle.org/plugin/eu.xenit.alfresco for the latest version
+    id 'eu.xenit.amp' version "1.0.1" apply(false)
+    id "eu.xenit.docker-alfresco" version "5.0.5" apply(false) // See https://plugins.gradle.org/plugin/eu.xenit.docker-alfresco for the latest version
+    id "eu.xenit.docker-compose.auto" version "5.0.5" apply(false) // See https://plugins.gradle.org/plugin/eu.xenit.docker-compose.auto for the latest version
 }
 
 group 'eu.xenit.alfresco'
@@ -19,8 +16,6 @@ if (isRelease)
     version = "$baseVersion"
 else
     version = "$baseVersion-SNAPSHOT"
-
-tasks.jar.enabled = false
 
 configure(subprojects.findAll {it.name.contains("hotfix")}) {
     apply plugin: 'java'
