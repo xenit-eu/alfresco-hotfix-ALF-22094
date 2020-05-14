@@ -9,6 +9,7 @@
             <ref bean="ServiceRegistry" />
         </property>
         <property name="fileLocation" value="${eu.xenit.alfresco.anti-idle.fileLocation}" />
+        <property name="enabled" value="${eu.xenit.alfresco.anti-idle.enabled}" />
     </bean>
 
     <bean id="eu.xenit.alfresco.AntiIdleJobDetail"
@@ -31,16 +32,7 @@
         <property name="startDelay" value="${eu.xenit.alfresco.anti-idle.cronstartdelay}" />
     </bean>
 
-    <bean id="eu.xenit.alfresco.AntiIdleSchedulerAccessor"
-            class="org.alfresco.schedule.AlfrescoSchedulerAccessorBean">
-        <property name="scheduler" ref="schedulerFactory"/>
-        <property name="triggers">
-            <list>
-                <ref bean="eu.xenit.alfresco.AntiIdleTrigger"/>
-            </list>
-        </property>
-        <property name="enabled" value="${eu.xenit.alfresco.anti-idle.enabled}" />
+    <bean id="eu.xenit.alfresco.AntiIdleTriggerRegistry"  class="eu.xenit.alfresco.AntiIdleTriggerRegistry"
+          depends-on="eu.xenit.alfresco.AntiIdleTrigger">
     </bean>
-
-
 </beans>

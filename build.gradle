@@ -62,13 +62,14 @@ configure(subprojects.findAll {it.name.contains("hotfix")}) {
 
     dependencies {
         alfrescoProvided("${alfRepoDep}")
+        alfrescoProvided("${quartz}")
         baseAlfrescoWar "${alfrescoWarDep}"
-        alfrescoAmp tasks.getByPath("${ampTask}").outputs.files
+        alfrescoAmp project.tasks.amp.outputs.files
     }
-}
 
-repositories {
-    mavenCentral()
+    repositories {
+        mavenCentral()
+    }
 }
 
 
