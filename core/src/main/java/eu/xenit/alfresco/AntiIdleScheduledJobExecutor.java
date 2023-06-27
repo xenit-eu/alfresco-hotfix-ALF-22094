@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.nodelocator.NodeLocatorService;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
@@ -30,7 +29,6 @@ public class AntiIdleScheduledJobExecutor {
     private String fileName;
     private boolean enabled = true;
     private NodeService nodeService;
-    private NodeLocatorService nodeLocatorService;
     private RetryingTransactionHelper retryingTransactionHelper;
     private NodeRef nodeRef;
 
@@ -42,7 +40,6 @@ public class AntiIdleScheduledJobExecutor {
     public void setServiceRegistry(ServiceRegistry serviceRegistry) {
         this.serviceRegistry = serviceRegistry;
         this.nodeService = serviceRegistry.getNodeService();
-        this.nodeLocatorService = serviceRegistry.getNodeLocatorService();
         this.retryingTransactionHelper = serviceRegistry.getRetryingTransactionHelper();
     }
 
@@ -99,7 +96,7 @@ public class AntiIdleScheduledJobExecutor {
 
     private NodeRef getOrCreateDummyFile() {
         NodeRef parent = getFolderByDisplayPath(folder, true);
-        NodeRef existing = nodeService.getChildByName(parent, ContentModel.ASSOC_CONTAINS, fileName);;
+        NodeRef existing = nodeService.getChildByName(parent, ContentModel.ASSOC_CONTAINS, fileName);
         if (existing != null) {
             LOG.debug("Dummy already exists: " + existing);
             return existing;
@@ -124,10 +121,14 @@ public class AntiIdleScheduledJobExecutor {
     }
 
     private void updateDummyDoc(NodeRef nodeRef) {
+        // Update metadata to create transaction commit for Solr to index
         nodeService.setProperty(
                 nodeRef,
                 ContentModel.PROP_DESCRIPTION,
                 "I was updated to create a dummy transaction on " + LocalDateTime.now());
+        // Toggle permissions to create a recent ACL set change for Solr to index
+        serviceRegistry.getPermissionService().setPermission(nodeRef, "admin", "read", false);
+        serviceRegistry.getPermissionService().setPermission(nodeRef, "admin", "read", true);
     }
 
     public NodeRef getFolderByDisplayPath(final String[] path, final boolean create) {
