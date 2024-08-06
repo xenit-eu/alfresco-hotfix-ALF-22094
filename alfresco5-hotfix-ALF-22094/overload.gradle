@@ -1,6 +1,0 @@
-ext {
-    alfRepoDep = "org.alfresco:alfresco-repository:5.2.g"
-    alfrescoImageDep = "xenit/alfresco-repository-community:5.2"
-    alfrescoWarDep = "org.alfresco:alfresco-platform:5.2.g@war"
-    quartz = "org.quartz-scheduler:quartz:1.8.3"
-}

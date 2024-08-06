@@ -1,5 +1,5 @@
 rootProject.name = 'alfresco-hotfix-ALF-22094'
 
 include ':core'
-include ':alfresco5-hotfix-ALF-22094'
-include ':alfresco6-hotfix-ALF-22094'
+include ':alfresco7-hotfix-ALF-22094'
+

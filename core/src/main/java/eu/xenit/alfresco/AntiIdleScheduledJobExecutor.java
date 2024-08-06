@@ -10,12 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
+import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.slf4j.Logger;
@@ -81,13 +83,10 @@ public class AntiIdleScheduledJobExecutor {
     public void execute() {
         if (!enabled) {
             LOG.debug("Not running " + this.getClass().getCanonicalName() + ", not enabled");
-            return;
         }
         LOG.debug("Running " + this.getClass().getCanonicalName());
         retryingTransactionHelper.doInTransaction(() -> {
-            if (nodeRef == null) {
-                nodeRef = getOrCreateDummyFile();
-            }
+            nodeRef = getOrCreateDummyFile();
             LOG.debug("Updating " + nodeRef);
             updateDummyDoc(nodeRef);
             return null;
@@ -127,8 +126,8 @@ public class AntiIdleScheduledJobExecutor {
                 ContentModel.PROP_DESCRIPTION,
                 "I was updated to create a dummy transaction on " + LocalDateTime.now());
         // Toggle permissions to create a recent ACL set change for Solr to index
-        serviceRegistry.getPermissionService().setPermission(nodeRef, "admin", "read", false);
-        serviceRegistry.getPermissionService().setPermission(nodeRef, "admin", "read", true);
+        serviceRegistry.getPermissionService().setPermission(nodeRef, "admin", PermissionService.READ, false);
+        serviceRegistry.getPermissionService().setPermission(nodeRef, "admin", PermissionService.READ, true);
     }
 
     public NodeRef getFolderByDisplayPath(final String[] path, final boolean create) {
