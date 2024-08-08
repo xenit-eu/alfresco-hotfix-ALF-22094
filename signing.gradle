@@ -1,7 +1,7 @@
-apply plugin: 'java'
+apply plugin: 'signing'
 
 signing {
     required { !version.toString().endsWith('SNAPSHOT') && gradle.taskGraph.hasTask("publish") }
-    useInMemoryPgpKeys(findProperty('signingKeyId'), findProperty('signingKey'), findProperty('signingPassword'))
+    useInMemoryPgpKeys(findProperty('signingKeyId'), findProperty('signingPassword'))
     sign publishing.publications.mavenJava
 }

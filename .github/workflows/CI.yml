@@ -7,12 +7,10 @@ on:
       - 'v*'
   pull_request:
 env:
-  GRADLE_OPTS: >-
-    -Dorg.gradle.project.sonatypeUsername=${{ secrets.SONATYPE_S01_USERNAME }}
-    -Dorg.gradle.project.sonatypePassword=${{ secrets.SONATYPE_S01_PASSWORD }}
-    -Dorg.gradle.project.signingKeyId=CDE3528F
-    -Dorg.gradle.project.signingKey=${{ secrets.MAVEN_CENTRAL_GPG_KEY }}
-    -Dorg.gradle.project.signingPassword=${{ secrets.MAVEN_CENTRAL_GPG_PASSWORD }}
+  ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_S01_USERNAME }}
+  ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_S01_PASSWORD }}
+  ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVEN_CENTRAL_GPG_KEY }}
+  ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVEN_CENTRAL_GPG_PASSWORD }}
 jobs:
   buildAndPublish:
     runs-on: ubuntu-latest
