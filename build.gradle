@@ -5,17 +5,8 @@ plugins {
     id "eu.xenit.docker-compose.auto" version "5.5.0" apply(false) // See https://plugins.gradle.org/plugin/eu.xenit.docker-compose.auto for the latest version
 }
 
-group 'eu.xenit.alfresco'
+group = 'eu.xenit.alfresco'
 description = "Hotfix for ALF-22094, reduce access logs from Solr for an idle Alfresco"
-
-def baseVersion = "2.0.0"
-
-def branchName = System.env.BRANCH_NAME
-def isRelease = branchName != null && branchName.startsWith("release")
-if (isRelease)
-    version = "$baseVersion"
-else
-    version = "$baseVersion-SNAPSHOT"
 
 configure(subprojects.findAll {it.name.contains("hotfix")}) {
     apply plugin: 'java'
