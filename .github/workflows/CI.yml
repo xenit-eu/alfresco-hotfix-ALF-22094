@@ -27,5 +27,5 @@ jobs:
       - name: Build Amp
         run: ./gradlew amp --info
       - name: Publish Amp
-        if: ${{ startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/head/master') }}
+        if: ${{ startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/heads/master') }}
         run: ./gradlew publish --info
