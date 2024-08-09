@@ -1,5 +1,16 @@
+plugins {
+    id('org.ajoberstar.reckon.settings') version '0.18.3'
+}
+
 rootProject.name = 'alfresco-hotfix-ALF-22094'
 
+reckon {
+    defaultInferredScope = 'patch'
+    snapshots()
+    scopeCalc = calcScopeFromProp()
+    stageCalc = calcStageFromProp()
+}
+
 include ':core'
-include ':alfresco5-hotfix-ALF-22094'
-include ':alfresco6-hotfix-ALF-22094'
+include ':alfresco7-hotfix-ALF-22094'
+
