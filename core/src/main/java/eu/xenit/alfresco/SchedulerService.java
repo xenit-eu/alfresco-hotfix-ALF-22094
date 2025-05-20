@@ -18,9 +18,9 @@ public class SchedulerService {
 
         final AntiIdleScheduledJobExecutor jobExecutor = (AntiIdleScheduledJobExecutor) executorObj;
 
-        AuthenticationUtil.runAs(() -> {
+        AuthenticationUtil.runAsSystem(() -> {
             jobExecutor.execute();
             return null;
-        }, AuthenticationUtil.getSystemUserName());
+        });
     }
 }

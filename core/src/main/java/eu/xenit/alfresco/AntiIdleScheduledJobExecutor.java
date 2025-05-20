@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
@@ -46,18 +45,18 @@ public class AntiIdleScheduledJobExecutor {
     }
 
     public void setFileLocation(String location) {
-        if (StringUtils.isEmpty(location)) {
-            LOG.debug("Custom location not set, using default " + defaultLocation);
+        if (!StringUtils.hasText(location)) {
+            LOG.debug("Custom location not set, using default {}", defaultLocation);
             setFolderAndFileName(toSegments(defaultLocation));
             return;
         }
         List<String> segments = toSegments(location);
         if (segments.isEmpty()) {
-            LOG.debug("Custom location should have at least one segment, using default " + defaultLocation);
+            LOG.debug("Custom location should have at least one segment, using default {}", defaultLocation);
             setFolderAndFileName(toSegments(defaultLocation));
             return;
         }
-        LOG.debug("Setting location to " + location);
+        LOG.debug("Setting location to {}", location);
         setFolderAndFileName(segments);
     }
 
@@ -68,12 +67,12 @@ public class AntiIdleScheduledJobExecutor {
 
     private List<String> toSegments(String location) {
         return Arrays.stream(location.split("/"))
-                .filter(s -> !StringUtils.isEmpty(s))
+                .filter(s -> StringUtils.hasText(s))
                 .collect(Collectors.toList());
     }
 
     public void setEnabled(boolean enabled) {
-        LOG.debug("setting enabled to " + enabled);
+        LOG.debug("setting enabled to {}", enabled);
         this.enabled = enabled;
     }
 
@@ -82,12 +81,13 @@ public class AntiIdleScheduledJobExecutor {
      */
     public void execute() {
         if (!enabled) {
-            LOG.debug("Not running " + this.getClass().getCanonicalName() + ", not enabled");
+            LOG.debug("Not running {}, not enabled", this.getClass().getCanonicalName());
+            return;
         }
-        LOG.debug("Running " + this.getClass().getCanonicalName());
+        LOG.debug("Running {}", this.getClass().getCanonicalName());
         retryingTransactionHelper.doInTransaction(() -> {
             nodeRef = getOrCreateDummyFile();
-            LOG.debug("Updating " + nodeRef);
+            LOG.debug("Updating {}", nodeRef);
             updateDummyDoc(nodeRef);
             return null;
         });
@@ -97,11 +97,11 @@ public class AntiIdleScheduledJobExecutor {
         NodeRef parent = getFolderByDisplayPath(folder, true);
         NodeRef existing = nodeService.getChildByName(parent, ContentModel.ASSOC_CONTAINS, fileName);
         if (existing != null) {
-            LOG.debug("Dummy already exists: " + existing);
+            LOG.debug("Dummy already exists: {}", existing);
             return existing;
         }
         nodeRef = createDummyDoc(parent);
-        LOG.debug("Created dummy" + nodeRef);
+        LOG.debug("Created dummy {}", nodeRef);
         return nodeRef;
     }
 
@@ -113,9 +113,7 @@ public class AntiIdleScheduledJobExecutor {
                         NamespaceService.CONTENT_MODEL_1_0_URI,
                         fileName),
                 ContentModel.PROP_CONTENT,
-                new HashMap<QName, Serializable>() {{
-                    put(ContentModel.PROP_NAME, fileName);
-                }});
+                Map.of(ContentModel.PROP_NAME, fileName));
         return node.getChildRef();
     }
 
