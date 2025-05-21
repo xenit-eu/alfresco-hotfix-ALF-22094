@@ -1,6 +1,6 @@
 ext {
-    alfRepoDep = "org.alfresco:alfresco-repository:23.3.0.1"
-    alfrescoImageDep = "xenit/alfresco-repository-community:23.3.0.1"
-    alfrescoWarDep = "org.alfresco:content-services-community:23.3.0.1@war"
-    quartz = "org.quartz-scheduler:quartz:2.3.2"
+    alfRepoDep = "org.alfresco:alfresco-repository:25.1.0.71"
+    alfrescoImageDep = "xenit/alfresco-repository-community:25.1.0"
+    alfrescoWarDep = "org.alfresco:content-services-community:25.1.0.71@war"
+    quartz = "org.quartz-scheduler:quartz:2.5.0"
 }
