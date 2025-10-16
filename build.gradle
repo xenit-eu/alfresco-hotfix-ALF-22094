@@ -55,8 +55,7 @@ configure(subprojects.findAll {it.name.contains("hotfix")}) {
         alfrescoProvided "${alfRepoDep}"
         alfrescoProvided "${quartz}"
         baseAlfrescoWar "${alfrescoWarDep}"
-        // OOTBee Support Tools 1.2.2.0 has issue on ACS 25.x, 1.2.3.0 not yet released
-        // alfrescoAmp 'org.orderofthebee.support-tools:support-tools-repo:1.2.2.0:amp@amp'
+        alfrescoAmp 'org.orderofthebee.support-tools:support-tools-repo:1.2.3.0:amp@amp'
         alfrescoAmp project.tasks.amp.outputs.files
     }
 
