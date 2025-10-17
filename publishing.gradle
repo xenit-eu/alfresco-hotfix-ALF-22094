@@ -4,6 +4,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifact amp
+            from components.java
 
             pom {
                 url = "https://github.com/xenit-eu/${rootProject.getName()}"
