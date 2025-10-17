@@ -22,7 +22,6 @@ configure(subprojects.findAll {it.name.contains("hotfix")}) {
     group = rootProject.group
 
     apply from: "${rootProject.projectDir}/publishing.gradle"
-    apply from: "${rootProject.projectDir}/signing.gradle"
     apply from: "${project.projectDir}/overload.gradle"
 
     sourceSets {
@@ -33,8 +32,8 @@ configure(subprojects.findAll {it.name.contains("hotfix")}) {
         }
     }
 
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 
     dockerAlfresco {
         baseImage = "${alfrescoImageDep}"
@@ -55,7 +54,7 @@ configure(subprojects.findAll {it.name.contains("hotfix")}) {
         alfrescoProvided "${alfRepoDep}"
         alfrescoProvided "${quartz}"
         baseAlfrescoWar "${alfrescoWarDep}"
-        alfrescoAmp 'org.orderofthebee.support-tools:support-tools-repo:1.2.2.0:amp@amp'
+        alfrescoAmp 'org.orderofthebee.support-tools:support-tools-repo:1.2.3.0:amp@amp'
         alfrescoAmp project.tasks.amp.outputs.files
     }
 

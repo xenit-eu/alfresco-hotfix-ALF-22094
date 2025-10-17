@@ -9,13 +9,9 @@ services:
     environment:
       #    - CATALINA_OPTS=-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
       - ALFRESCO_PROTOCOL=http
-      - GLOBAL_index.subsystem.name=noindex
-      - GLOBAL_ooo.enabled=false
-      - GLOBAL_jodconverter.enabled=false
       - DEBUG=true
       #    - JMX_ENABLED=true
       - INDEX=noindex
-      - JAVA_OPTS_PERM_GEN=-XX:PermSize=512m -XX:MaxPermSize=512m
     healthcheck:
       test: curl localhost:8080/alfresco/
       interval: 30s
