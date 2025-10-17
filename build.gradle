@@ -22,7 +22,6 @@ configure(subprojects.findAll {it.name.contains("hotfix")}) {
     group = rootProject.group
 
     apply from: "${rootProject.projectDir}/publishing.gradle"
-    apply from: "${rootProject.projectDir}/signing.gradle"
     apply from: "${project.projectDir}/overload.gradle"
 
     sourceSets {
